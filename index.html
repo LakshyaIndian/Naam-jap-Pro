@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a0a2e">
+<meta name="theme-color" content="#1a0a2e" id="meta-theme">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Naam Jap">
@@ -14,22 +14,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #FFD700;
-  --gold-light: #FFF0A0;
-  --gold-dark: #B8860B;
-  --bronze: #CD7F32;
-  --silver: #C0C0C0;
-  --platinum: #E5E4E2;
-  --diamond: #B9F2FF;
-  --deep-purple: #1a0a2e;
-  --mid-purple: #2d1054;
-  --accent-blue: #4a90d9;
-  --accent-cyan: #00d4ff;
-  --sacred-orange: #FF6B35;
-  --lotus-pink: #FF69B4;
-  --forest-green: #2ECC71;
-  --river-blue: #1E90FF;
-  --bg-current: #1a0a2e;
+  /* Fixed rank colours */
+  --bronze: #CD7F32; --silver: #C0C0C0; --platinum: #E5E4E2; --diamond: #B9F2FF;
+
+  /* Theme-aware (Sacred Night defaults — overridden per theme via JS) */
+  --gold: #FFD700; --gold-light: #FFF0A0; --gold-dark: #B8860B;
+  --sacred-orange: #FF6B35; --accent-cyan: #00d4ff;
+  --accent-blue: #4a90d9; --lotus-pink: #FF69B4;
+  --forest-green: #2ECC71; --river-blue: #1E90FF;
+  --deep-purple: #1a0a2e; --mid-purple: #2d1054;
+
+  /* Chrome vars (set by applyTheme) */
+  --topbar-bg: rgba(10,2,30,0.95); --topbar-bg2: rgba(10,2,30,0);
+  --nav-bg: rgba(5,0,20,0.92);     --nav-border: rgba(255,215,0,0.15);
+  --tap-bg1: #2a1060; --tap-bg2: #1a0845; --tap-bg3: #0d0530;
+  --ach-bg1: #1a0845; --ach-bg2: #0d0530;
+  --toast-bg: rgba(20,10,50,0.95);
+  --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,215,0,0.2);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -38,8 +39,8 @@ html, body {
   height: 100%; width: 100%; overflow: hidden;
   font-family: 'Crimson Pro', serif;
   background: var(--deep-purple);
-  color: #fff;
-  user-select: none;
+  color: #fff; user-select: none;
+  transition: background 1.5s ease;
 }
 
 /* ═══════════════════════════════════════════
@@ -107,15 +108,15 @@ html, body {
 ═══════════════════════════════════════════ */
 #topbar {
   padding: 12px 16px 8px;
-  background: linear-gradient(180deg, rgba(10,2,30,0.95) 0%, rgba(10,2,30,0.0) 100%);
+  background: linear-gradient(180deg, var(--topbar-bg) 0%, var(--topbar-bg2) 100%);
   display: flex; gap: 8px; justify-content: space-between; align-items: flex-start;
   flex-shrink: 0;
 }
 
 .stat-card {
   flex: 1;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,215,0,0.2);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 7px 8px;
   text-align: center;
@@ -131,7 +132,7 @@ html, body {
 .stat-label {
   font-family: 'Orbitron', sans-serif;
   font-size: 6px; letter-spacing: 1.2px; text-transform: uppercase;
-  color: rgba(255,215,0,0.6); display: block; margin-bottom: 2px;
+  color: var(--gold); opacity: 0.6; display: block; margin-bottom: 2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .stat-value {
@@ -229,14 +230,12 @@ html, body {
 
 /* Tap button */
 #tap-btn {
-  position: absolute;
-  top: 50%; left: 50%;
+  position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   width: 160px; height: 160px;
-  border-radius: 50%;
-  border: none; outline: none; cursor: pointer;
+  border-radius: 50%; border: none; outline: none; cursor: pointer;
   background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.15) 0%, transparent 60%),
-              linear-gradient(135deg, #2a1060 0%, #1a0845 40%, #0d0530 100%);
+              linear-gradient(135deg, var(--tap-bg1) 0%, var(--tap-bg2) 40%, var(--tap-bg3) 100%);
   box-shadow:
     0 0 0 3px rgba(255,215,0,0.3),
     0 0 0 6px rgba(255,215,0,0.1),
@@ -245,10 +244,8 @@ html, body {
     inset 0 -2px 4px rgba(0,0,0,0.4);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 1.5s ease;
   -webkit-tap-highlight-color: transparent;
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
 }
 #tap-btn:active {
   transform: translate(-50%, -50%) scale(0.94);
@@ -261,29 +258,22 @@ html, body {
 }
 
 .tap-om {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 44px;
-  background: linear-gradient(180deg, #FFE066, #FFD700, #B8860B);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: 'Cinzel Decorative', serif; font-size: 44px;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold), var(--gold-dark));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 0 8px rgba(255,215,0,0.5));
   line-height: 1;
 }
 .tap-label {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 8px; letter-spacing: 3px;
-  color: rgba(255,215,0,0.6);
-  margin-top: 4px;
+  font-family: 'Orbitron', sans-serif; font-size: 8px; letter-spacing: 3px;
+  color: var(--gold); opacity: 0.6; margin-top: 4px;
 }
 
 /* Ripple effect */
 .ripple {
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid rgba(255,215,0,0.6);
-  animation: ripple-out 0.8s ease-out forwards;
-  pointer-events: none;
+  position: absolute; border-radius: 50%;
+  border: 2px solid var(--gold); opacity: 0.6;
+  animation: ripple-out 0.8s ease-out forwards; pointer-events: none;
 }
 @keyframes ripple-out {
   0% { width: 160px; height: 160px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.8; }
@@ -292,14 +282,10 @@ html, body {
 
 /* +1 feedback */
 .plus-one {
-  position: absolute;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 22px; font-weight: 900;
-  color: var(--gold);
+  position: absolute; font-family: 'Orbitron', sans-serif;
+  font-size: 22px; font-weight: 900; color: var(--gold);
   text-shadow: 0 0 10px rgba(255,215,0,0.8);
-  pointer-events: none;
-  animation: float-fade 0.9s ease-out forwards;
-  z-index: 10;
+  pointer-events: none; animation: float-fade 0.9s ease-out forwards; z-index: 10;
 }
 @keyframes float-fade {
   0% { opacity: 1; transform: translateY(0) scale(1); }
@@ -312,19 +298,14 @@ html, body {
   margin-top: 0px;
 }
 #total-count-big {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 42px; font-weight: 900;
-  background: linear-gradient(180deg, #fff 0%, #FFD700 60%, #B8860B 100%);
+  font-family: 'Orbitron', sans-serif; font-size: 42px; font-weight: 900;
+  background: linear-gradient(180deg, #fff 0%, var(--gold) 60%, var(--gold-dark) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  text-shadow: none;
-  letter-spacing: -1px;
-  line-height: 1;
+  letter-spacing: -1px; line-height: 1;
 }
 #next-milestone-info {
-  font-family: 'Crimson Pro', serif;
-  font-size: 13px; color: rgba(255,215,0,0.5);
-  margin-top: 4px;
-  font-style: italic;
+  font-family: 'Crimson Pro', serif; font-size: 13px;
+  color: var(--gold); opacity: 0.5; margin-top: 4px; font-style: italic;
 }
 
 /* ═══════════════════════════════════════════
@@ -332,11 +313,11 @@ html, body {
 ═══════════════════════════════════════════ */
 #bottom-nav {
   display: flex;
-  background: rgba(5,0,20,0.92);
-  border-top: 1px solid rgba(255,215,0,0.15);
-  backdrop-filter: blur(12px);
-  flex-shrink: 0;
+  background: var(--nav-bg);
+  border-top: 1px solid var(--nav-border);
+  backdrop-filter: blur(12px); flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background 1.5s ease, border-color 1.5s ease;
 }
 
 .nav-btn {
@@ -353,8 +334,7 @@ html, body {
 }
 .nav-btn.active { color: var(--gold); }
 .nav-btn.active::before {
-  content: '';
-  position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
+  content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
   border-radius: 0 0 4px 4px;
 }
@@ -375,11 +355,8 @@ html, body {
    HISTORY VIEW
 ═══════════════════════════════════════════ */
 .view-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 16px; font-weight: 700;
-  color: var(--gold);
-  text-align: center; margin-bottom: 20px;
-  letter-spacing: 2px;
+  font-family: 'Cinzel Decorative', serif; font-size: 16px; font-weight: 700;
+  color: var(--gold); text-align: center; margin-bottom: 20px; letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(255,215,0,0.4);
 }
 
@@ -402,10 +379,7 @@ html, body {
   font-family: 'Crimson Pro', serif;
   font-size: 14px; color: rgba(255,255,255,0.7);
 }
-.history-count {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 18px; font-weight: 700; color: var(--gold);
-}
+.history-count { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); }
 .history-badge { font-size: 18px; }
 
 .streak-card {
@@ -560,16 +534,12 @@ html, body {
 }
 
 .achievement-card {
-  background: linear-gradient(135deg, #1a0845, #0d0530);
-  border: 2px solid rgba(255,215,0,0.5);
-  border-radius: 24px;
-  padding: 32px 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  max-width: 280px; width: 90%;
+  background: linear-gradient(135deg, var(--ach-bg1), var(--ach-bg2));
+  border: 2px solid var(--gold); opacity-border: 0.5;
+  border-radius: 24px; padding: 32px 28px; text-align: center;
+  position: relative; overflow: hidden; max-width: 280px; width: 90%;
   transform: scale(0.7);
-  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), background 1.5s ease;
   box-shadow: 0 0 40px rgba(255,215,0,0.3), 0 0 80px rgba(100,50,200,0.2);
 }
 #achievement-overlay.show .achievement-card {
@@ -596,9 +566,8 @@ html, body {
   color: rgba(255,215,0,0.6); margin-bottom: 6px;
 }
 #ach-name {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 20px; font-weight: 700;
-  background: linear-gradient(180deg, #fff, var(--gold));
+  font-family: 'Cinzel Decorative', serif; font-size: 20px; font-weight: 700;
+  background: linear-gradient(180deg, #fff, var(--gold), var(--gold-dark));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 4px;
 }
@@ -639,14 +608,11 @@ html, body {
 #toast {
   position: fixed; bottom: 80px; left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: rgba(20,10,50,0.95);
-  border: 1px solid rgba(255,215,0,0.3);
+  background: var(--toast-bg);
+  border: 1px solid var(--card-border);
   border-radius: 100px; padding: 8px 20px;
-  font-family: 'Crimson Pro', serif;
-  font-size: 14px; color: rgba(255,215,0,0.9);
-  opacity: 0; pointer-events: none;
-  transition: all 0.3s; z-index: 50;
-  white-space: nowrap;
+  font-family: 'Crimson Pro', serif; font-size: 14px; color: var(--gold); opacity: 0.9;
+  opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 50; white-space: nowrap;
   backdrop-filter: blur(8px);
 }
 #toast.show {
@@ -722,8 +688,149 @@ html, body {
   50% { transform: scale(1.2) rotate(5deg); opacity: 1; filter: brightness(2) drop-shadow(0 0 20px gold); }
   100% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1.3) drop-shadow(0 0 10px gold); }
 }
-.leela-unlocking {
-  animation: leela-unlock 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards !important;
+.leela-unlocking { animation: leela-unlock 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards !important; }
+
+/* ═══════════════════════════════════════════
+   THEME TINT OVERLAY
+═══════════════════════════════════════════ */
+#theme-tint {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  opacity: 0; transition: opacity 2s ease, background 2s ease;
+}
+
+/* ═══════════════════════════════════════════
+   MILESTONE LABEL
+═══════════════════════════════════════════ */
+#milestone-label {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); opacity: 0.7;
+  margin-bottom: 8px; text-align: center; min-height: 16px;
+}
+
+/* ═══════════════════════════════════════════
+   DAILY GOAL BAR
+═══════════════════════════════════════════ */
+#daily-goal-wrap { width: 100%; max-width: 230px; margin-top: 12px; }
+.goal-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.goal-bar-label {
+  font-family: 'Orbitron', sans-serif; font-size: 7px;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); opacity: 0.5;
+}
+.goal-bar-nums { font-family: 'Orbitron', sans-serif; font-size: 8px; color: rgba(255,255,255,0.4); }
+.goal-bar-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+.goal-bar-fill { height: 100%; width: 0%; background: var(--gold); border-radius: 2px; transition: width 0.4s ease, background 1.5s ease; }
+.goal-bar-fill.done { background: #4cde80; }
+
+/* ═══════════════════════════════════════════
+   SPIRITUAL QUOTE
+═══════════════════════════════════════════ */
+#spiritual-quote {
+  font-family: 'Crimson Pro', serif; font-size: 11.5px; font-style: italic;
+  color: rgba(255,255,255,0.28); text-align: center;
+  max-width: 240px; margin-top: 10px; min-height: 30px; line-height: 1.55;
+  transition: opacity 0.6s ease;
+}
+
+/* ═══════════════════════════════════════════
+   COMBO DISPLAY
+═══════════════════════════════════════════ */
+#combo-display {
+  position: absolute; top: 16%; left: 50%; transform: translateX(-50%);
+  font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900;
+  letter-spacing: 2px; pointer-events: none; z-index: 10;
+  opacity: 0; transition: opacity 0.5s ease; white-space: nowrap;
+}
+@keyframes combo-pop {
+  0%   { transform: translateX(-50%) scale(0.5); }
+  60%  { transform: translateX(-50%) scale(1.15); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+/* ═══════════════════════════════════════════
+   SETTINGS PANEL (Leela tab)
+═══════════════════════════════════════════ */
+.settings-panel {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 16px 14px; margin-bottom: 20px;
+}
+.settings-section { margin-bottom: 14px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+.settings-section-title {
+  font-family: 'Orbitron', sans-serif; font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35);
+}
+.settings-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 14px 0; }
+
+/* Theme buttons */
+.theme-row {
+  display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 6px;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.theme-row::-webkit-scrollbar { display: none; }
+.theme-btn {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 8px 10px; border-radius: 13px; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03); transition: all 0.2s;
+  min-width: 56px;
+}
+.theme-btn:active { transform: scale(0.92); }
+.theme-btn.active {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.07);
+  box-shadow: 0 0 12px rgba(255,215,0,0.2);
+}
+.theme-emoji { font-size: 20px; line-height: 1; }
+.theme-name {
+  font-family: 'Orbitron', sans-serif; font-size: 5.5px; letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.4); text-transform: uppercase; text-align: center;
+  line-height: 1.3; white-space: normal; max-width: 52px;
+}
+.theme-btn.active .theme-name { color: var(--gold); }
+
+/* Toggle switch */
+.settings-toggle-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 8px 0;
+}
+.settings-toggle-row + .settings-toggle-row { border-top: 1px solid rgba(255,255,255,0.05); }
+.toggle-label { font-family: 'Crimson Pro', serif; font-size: 14px; color: rgba(255,255,255,0.75); }
+.toggle-sub {
+  font-family: 'Orbitron', sans-serif; font-size: 6.5px; letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.28); display: block; margin-top: 2px;
+}
+.toggle-switch { position: relative; display: inline-block; width: 46px; height: 26px; cursor: pointer; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; background: rgba(255,255,255,0.08);
+  border-radius: 100px; border: 1px solid rgba(255,255,255,0.12); transition: all 0.3s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px;
+  border-radius: 50%; background: rgba(255,255,255,0.45); transition: all 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: rgba(255,215,0,0.15); border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(255,215,0,0.2);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px); background: var(--gold);
+}
+
+/* Goal pills */
+.goal-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.goal-pill {
+  padding: 7px 13px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.5); font-family: 'Orbitron', sans-serif;
+  font-size: 9px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+}
+.goal-pill:active { transform: scale(0.94); }
+.goal-pill.active {
+  border-color: var(--gold); background: rgba(255,215,0,0.1);
+  color: var(--gold); box-shadow: 0 0 8px rgba(255,215,0,0.15);
 }
 </style>
 </head>
@@ -732,6 +839,7 @@ html, body {
 <!-- Background -->
 <div id="bg-canvas">
   <div class="stars"></div>
+  <div id="theme-tint"></div>
   <div id="particles-container"></div>
 </div>
 
@@ -782,9 +890,9 @@ html, body {
       <svg id="progress-svg" viewBox="0 0 240 240" width="240" height="240">
         <defs>
           <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#FFD700"/>
-            <stop offset="50%" style="stop-color:#FF6B35"/>
-            <stop offset="100%" style="stop-color:#FFD700"/>
+            <stop offset="0%"   id="prog-stop-1" style="stop-color:#FFD700"/>
+            <stop offset="50%"  id="prog-stop-2" style="stop-color:#FF6B35"/>
+            <stop offset="100%" id="prog-stop-3" style="stop-color:#FFD700"/>
           </linearGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -808,6 +916,23 @@ html, body {
       <div id="total-count-big">0</div>
       <div id="next-milestone-info">Next: 1,000 Jap for Bronze 🥉</div>
     </div>
+
+    <!-- Daily Goal Progress Bar -->
+    <div id="daily-goal-wrap" style="display:none">
+      <div class="goal-bar-header">
+        <span class="goal-bar-label">Daily Goal</span>
+        <span class="goal-bar-nums" id="goal-bar-nums"></span>
+      </div>
+      <div class="goal-bar-track">
+        <div class="goal-bar-fill" id="goal-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Combo -->
+    <div id="combo-display"></div>
+
+    <!-- Spiritual Quote -->
+    <div id="spiritual-quote"></div>
   </div>
 
   <!-- Dashboard View -->
@@ -855,6 +980,62 @@ html, body {
   <!-- Leela Gallery -->
   <div id="gallery-view" class="view">
     <div class="view-title">✦ Leela Gallery ✦</div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel">
+
+      <!-- Theme -->
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span>🎨</span>
+          <span class="settings-section-title">Theme</span>
+        </div>
+        <div class="theme-row" id="theme-row"></div>
+      </div>
+
+      <hr class="settings-divider">
+
+      <!-- Sound -->
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span>🎵</span>
+          <span class="settings-section-title">Sound</span>
+        </div>
+        <div class="settings-toggle-row">
+          <div>
+            <span class="toggle-label">Ambient Music</span>
+            <span class="toggle-sub">Sacred background drone &amp; chimes</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="ambient-check" onchange="toggleAmbient(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-row">
+          <div>
+            <span class="toggle-label">Tap Sound</span>
+            <span class="toggle-sub">Bell tone on each Jap</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="tap-check" onchange="toggleTapSound(this.checked)" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <hr class="settings-divider">
+
+      <!-- Daily Goal -->
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span>🎯</span>
+          <span class="settings-section-title">Daily Goal</span>
+        </div>
+        <div class="goal-pills" id="goal-pills"></div>
+      </div>
+
+    </div>
+
     <p style="text-align:center;font-family:'Crimson Pro',serif;font-size:13px;color:rgba(255,215,0,0.4);margin-bottom:16px;font-style:italic">
       A sacred journey through symbols of devotion
     </p>
@@ -885,58 +1066,212 @@ html, body {
 
 <script>
 // ═══════════════════════════════════════════
+// THEMES  (11 total — Sacred Night default + 10 new)
+// ═══════════════════════════════════════════
+const THEMES = [
+  { id:'sacred-night',    name:'Sacred Night',    emoji:'🔮',
+    particles:['#6040ff','#ff6b35','#ffd700'],
+    vars:{'--gold':'#FFD700','--gold-light':'#FFF0A0','--gold-dark':'#B8860B',
+          '--sacred-orange':'#FF6B35','--accent-cyan':'#00D4FF',
+          '--deep-purple':'#1a0a2e','--mid-purple':'#2d1054',
+          '--topbar-bg':'rgba(10,2,30,0.95)','--topbar-bg2':'rgba(10,2,30,0)',
+          '--nav-bg':'rgba(5,0,20,0.92)','--nav-border':'rgba(255,215,0,0.15)',
+          '--tap-bg1':'#2a1060','--tap-bg2':'#1a0845','--tap-bg3':'#0d0530',
+          '--ach-bg1':'#1a0845','--ach-bg2':'#0d0530',
+          '--toast-bg':'rgba(20,10,50,0.95)',
+          '--card-bg':'rgba(255,255,255,0.06)','--card-border':'rgba(255,215,0,0.2)'}},
+  { id:'golden-temple',   name:'Golden Temple',   emoji:'🏛️',
+    particles:['#FFB800','#FF7700','#FFE566'],
+    vars:{'--gold':'#FFB800','--gold-light':'#FFE566','--gold-dark':'#CC8800',
+          '--sacred-orange':'#FF7700','--accent-cyan':'#FF9944',
+          '--deep-purple':'#1A0800','--mid-purple':'#2A1200',
+          '--topbar-bg':'rgba(20,8,0,0.95)','--topbar-bg2':'rgba(20,8,0,0)',
+          '--nav-bg':'rgba(15,5,0,0.92)','--nav-border':'rgba(255,184,0,0.15)',
+          '--tap-bg1':'#3a1a00','--tap-bg2':'#271000','--tap-bg3':'#180800',
+          '--ach-bg1':'#271000','--ach-bg2':'#180800',
+          '--toast-bg':'rgba(25,12,0,0.95)',
+          '--card-bg':'rgba(255,184,0,0.05)','--card-border':'rgba(255,184,0,0.2)'}},
+  { id:'himalayan-dawn',  name:'Himalayan Dawn',  emoji:'🌄',
+    particles:['#FF8FA3','#FF6B9D','#FFB3C8'],
+    vars:{'--gold':'#FF8FA3','--gold-light':'#FFBFCC','--gold-dark':'#D45C78',
+          '--sacred-orange':'#FF6B9D','--accent-cyan':'#FFB3BA',
+          '--deep-purple':'#1A0814','--mid-purple':'#2A1020',
+          '--topbar-bg':'rgba(20,4,16,0.95)','--topbar-bg2':'rgba(20,4,16,0)',
+          '--nav-bg':'rgba(15,3,12,0.92)','--nav-border':'rgba(255,143,163,0.15)',
+          '--tap-bg1':'#3a0f28','--tap-bg2':'#250a1c','--tap-bg3':'#150510',
+          '--ach-bg1':'#250a1c','--ach-bg2':'#150510',
+          '--toast-bg':'rgba(20,5,14,0.95)',
+          '--card-bg':'rgba(255,143,163,0.05)','--card-border':'rgba(255,143,163,0.2)'}},
+  { id:'ocean-deep',      name:'Ocean Deep',      emoji:'🌊',
+    particles:['#00D4FF','#0080FF','#40C0FF'],
+    vars:{'--gold':'#00D4FF','--gold-light':'#80EAFF','--gold-dark':'#0099CC',
+          '--sacred-orange':'#0080FF','--accent-cyan':'#40E0FF',
+          '--deep-purple':'#030A15','--mid-purple':'#061525',
+          '--topbar-bg':'rgba(2,6,15,0.95)','--topbar-bg2':'rgba(2,6,15,0)',
+          '--nav-bg':'rgba(2,5,12,0.92)','--nav-border':'rgba(0,212,255,0.15)',
+          '--tap-bg1':'#001a35','--tap-bg2':'#001025','--tap-bg3':'#000815',
+          '--ach-bg1':'#001025','--ach-bg2':'#000815',
+          '--toast-bg':'rgba(2,8,20,0.95)',
+          '--card-bg':'rgba(0,212,255,0.05)','--card-border':'rgba(0,212,255,0.2)'}},
+  { id:'emerald-shrine',  name:'Emerald Shrine',  emoji:'🌿',
+    particles:['#00E676','#00BFA5','#80FFB8'],
+    vars:{'--gold':'#00E676','--gold-light':'#80F0B8','--gold-dark':'#00A854',
+          '--sacred-orange':'#00BFA5','--accent-cyan':'#40FF90',
+          '--deep-purple':'#041A08','--mid-purple':'#082A10',
+          '--topbar-bg':'rgba(2,12,4,0.95)','--topbar-bg2':'rgba(2,12,4,0)',
+          '--nav-bg':'rgba(2,10,3,0.92)','--nav-border':'rgba(0,230,118,0.15)',
+          '--tap-bg1':'#0a2a10','--tap-bg2':'#061a08','--tap-bg3':'#030f04',
+          '--ach-bg1':'#061a08','--ach-bg2':'#030f04',
+          '--toast-bg':'rgba(3,12,5,0.95)',
+          '--card-bg':'rgba(0,230,118,0.05)','--card-border':'rgba(0,230,118,0.2)'}},
+  { id:'cherry-blossom',  name:'Cherry Blossom',  emoji:'🌸',
+    particles:['#FF69B4','#DA70D6','#FFB3D9'],
+    vars:{'--gold':'#FF69B4','--gold-light':'#FFB8DA','--gold-dark':'#CC3380',
+          '--sacred-orange':'#DA70D6','--accent-cyan':'#FF99CC',
+          '--deep-purple':'#0F0010','--mid-purple':'#1A0020',
+          '--topbar-bg':'rgba(10,0,12,0.95)','--topbar-bg2':'rgba(10,0,12,0)',
+          '--nav-bg':'rgba(8,0,10,0.92)','--nav-border':'rgba(255,105,180,0.15)',
+          '--tap-bg1':'#2a0040','--tap-bg2':'#1c0030','--tap-bg3':'#100018',
+          '--ach-bg1':'#1c0030','--ach-bg2':'#100018',
+          '--toast-bg':'rgba(12,0,15,0.95)',
+          '--card-bg':'rgba(255,105,180,0.05)','--card-border':'rgba(255,105,180,0.2)'}},
+  { id:'midnight-galaxy', name:'Midnight Galaxy', emoji:'🌌',
+    particles:['#8B7FFF','#60A0FF','#A090FF'],
+    vars:{'--gold':'#8B7FFF','--gold-light':'#C4BFFF','--gold-dark':'#5540CC',
+          '--sacred-orange':'#60A0FF','--accent-cyan':'#A090FF',
+          '--deep-purple':'#000510','--mid-purple':'#080020',
+          '--topbar-bg':'rgba(0,3,12,0.95)','--topbar-bg2':'rgba(0,3,12,0)',
+          '--nav-bg':'rgba(0,2,10,0.92)','--nav-border':'rgba(139,127,255,0.15)',
+          '--tap-bg1':'#0a0040','--tap-bg2':'#060028','--tap-bg3':'#030014',
+          '--ach-bg1':'#060028','--ach-bg2':'#030014',
+          '--toast-bg':'rgba(1,3,14,0.95)',
+          '--card-bg':'rgba(139,127,255,0.05)','--card-border':'rgba(139,127,255,0.2)'}},
+  { id:'desert-sunset',   name:'Desert Sunset',   emoji:'🌅',
+    particles:['#FF7043','#FF9800','#FFCC02'],
+    vars:{'--gold':'#FF7043','--gold-light':'#FFB09B','--gold-dark':'#CC4015',
+          '--sacred-orange':'#FF9800','--accent-cyan':'#FFC107',
+          '--deep-purple':'#100500','--mid-purple':'#200A00',
+          '--topbar-bg':'rgba(12,4,0,0.95)','--topbar-bg2':'rgba(12,4,0,0)',
+          '--nav-bg':'rgba(10,3,0,0.92)','--nav-border':'rgba(255,112,67,0.15)',
+          '--tap-bg1':'#2a0e00','--tap-bg2':'#1c0800','--tap-bg3':'#100400',
+          '--ach-bg1':'#1c0800','--ach-bg2':'#100400',
+          '--toast-bg':'rgba(14,5,0,0.95)',
+          '--card-bg':'rgba(255,112,67,0.05)','--card-border':'rgba(255,112,67,0.2)'}},
+  { id:'arctic-aurora',   name:'Arctic Aurora',   emoji:'✨',
+    particles:['#00FFD1','#00E5FF','#80FFEE'],
+    vars:{'--gold':'#00FFD1','--gold-light':'#80FFE9','--gold-dark':'#00BFA0',
+          '--sacred-orange':'#00E5FF','--accent-cyan':'#80FFEE',
+          '--deep-purple':'#020F15','--mid-purple':'#041820',
+          '--topbar-bg':'rgba(1,8,14,0.95)','--topbar-bg2':'rgba(1,8,14,0)',
+          '--nav-bg':'rgba(1,7,12,0.92)','--nav-border':'rgba(0,255,209,0.15)',
+          '--tap-bg1':'#003028','--tap-bg2':'#002018','--tap-bg3':'#00100c',
+          '--ach-bg1':'#002018','--ach-bg2':'#00100c',
+          '--toast-bg':'rgba(1,9,14,0.95)',
+          '--card-bg':'rgba(0,255,209,0.05)','--card-border':'rgba(0,255,209,0.2)'}},
+  { id:'crimson-devotion', name:'Crimson Devotion', emoji:'❤️',
+    particles:['#FF4444','#FF8A00','#FF6666'],
+    vars:{'--gold':'#FF4444','--gold-light':'#FF9999','--gold-dark':'#CC0000',
+          '--sacred-orange':'#FF8A00','--accent-cyan':'#FF6666',
+          '--deep-purple':'#150000','--mid-purple':'#250000',
+          '--topbar-bg':'rgba(14,0,0,0.95)','--topbar-bg2':'rgba(14,0,0,0)',
+          '--nav-bg':'rgba(12,0,0,0.92)','--nav-border':'rgba(255,68,68,0.15)',
+          '--tap-bg1':'#280000','--tap-bg2':'#1a0000','--tap-bg3':'#0e0000',
+          '--ach-bg1':'#1a0000','--ach-bg2':'#0e0000',
+          '--toast-bg':'rgba(15,0,0,0.95)',
+          '--card-bg':'rgba(255,68,68,0.05)','--card-border':'rgba(255,68,68,0.2)'}},
+  { id:'cosmic-violet',   name:'Cosmic Violet',   emoji:'🔭',
+    particles:['#CE93D8','#BA68C8','#E040FB'],
+    vars:{'--gold':'#CE93D8','--gold-light':'#E8C8F0','--gold-dark':'#9C27B0',
+          '--sacred-orange':'#BA68C8','--accent-cyan':'#E040FB',
+          '--deep-purple':'#050020','--mid-purple':'#0A0030',
+          '--topbar-bg':'rgba(4,0,20,0.95)','--topbar-bg2':'rgba(4,0,20,0)',
+          '--nav-bg':'rgba(3,0,16,0.92)','--nav-border':'rgba(206,147,216,0.15)',
+          '--tap-bg1':'#140040','--tap-bg2':'#0e0030','--tap-bg3':'#060018',
+          '--ach-bg1':'#0e0030','--ach-bg2':'#060018',
+          '--toast-bg':'rgba(5,0,22,0.95)',
+          '--card-bg':'rgba(206,147,216,0.05)','--card-border':'rgba(206,147,216,0.2)'}},
+];
+
+
+// ═══════════════════════════════════════════
 // DATA MODEL
 // ═══════════════════════════════════════════
 const MILESTONES = [
-  { count: 1000,    name: 'Bronze',         emoji: '🥉', color: '#CD7F32' },
-  { count: 2000,    name: 'Silver',         emoji: '🥈', color: '#C0C0C0' },
-  { count: 5000,    name: 'Gold',           emoji: '🥇', color: '#FFD700' },
-  { count: 10000,   name: 'Platinum',       emoji: '💎', color: '#E5E4E2' },
-  { count: 20000,   name: 'Diamond',        emoji: '💠', color: '#B9F2FF' },
-  { count: 50000,   name: 'Crown ⭐',       emoji: '👑', color: '#FFD700' },
-  { count: 100000,  name: 'Crown ⭐⭐',     emoji: '👑✨', color: '#FFD700' },
-  { count: 250000,  name: 'Crown ⭐⭐⭐',   emoji: '🌟👑', color: '#FFD700' },
-  { count: 500000,  name: 'Crown ⭐⭐⭐⭐', emoji: '🌟👑🌟', color: '#FFD700' },
+  { count:1000,   name:'Bronze',          emoji:'🥉', color:'#CD7F32' },
+  { count:2000,   name:'Silver',          emoji:'🥈', color:'#C0C0C0' },
+  { count:5000,   name:'Gold',            emoji:'🥇', color:'#FFD700' },
+  { count:10000,  name:'Platinum',        emoji:'💎', color:'#E5E4E2' },
+  { count:20000,  name:'Diamond',         emoji:'💠', color:'#B9F2FF' },
+  { count:50000,  name:'Crown ⭐',        emoji:'👑', color:'#FFD700' },
+  { count:100000, name:'Crown ⭐⭐',      emoji:'👑✨', color:'#FFD700' },
+  { count:250000, name:'Crown ⭐⭐⭐',    emoji:'🌟👑', color:'#FFD700' },
+  { count:500000, name:'Crown ⭐⭐⭐⭐',  emoji:'🌟👑🌟', color:'#FFD700' },
 ];
 
 const LEELA = [
-  { count: 10000,     name: 'Lotus',                  emoji: '🪷', desc: 'Sacred Lotus' },
-  { count: 20000,     name: 'Forest',                 emoji: '🌲', desc: 'Sacred Grove' },
-  { count: 50000,     name: 'River',                  emoji: '🌊', desc: 'Holy River' },
-  { count: 100000,    name: 'Cows',                   emoji: '🐄', desc: 'Sacred Cows' },
-  { count: 250000,    name: 'Yellow Flower',           emoji: '🌻', desc: 'Golden Bloom' },
-  { count: 500000,    name: 'Blue Flower',             emoji: '💠', desc: 'Divine Blue' },
-  { count: 1000000,   name: 'Mountain',               emoji: '🏔', desc: 'Sacred Peak' },
-  { count: 2000000,   name: 'Boat',                   emoji: '⛵', desc: 'Divine Vessel' },
-  { count: 5000000,   name: 'Golden Flute',           emoji: '🎵', desc: 'Krishna\'s Flute' },
-  { count: 10000000,  name: 'Peacock Feather',        emoji: '🦚', desc: 'Single Feather' },
-  { count: 50000000,  name: 'Double Peacock Feather', emoji: '🦚🦚', desc: 'Twin Feathers' },
-  { count: 100000000, name: 'Triple Peacock Feather', emoji: '🦚🦚🦚', desc: 'Golden Feathers' },
+  { count:10000,     name:'Lotus',                  emoji:'🪷',       desc:'Sacred Lotus'    },
+  { count:20000,     name:'Forest',                 emoji:'🌲',       desc:'Sacred Grove'    },
+  { count:50000,     name:'River',                  emoji:'🌊',       desc:'Holy River'      },
+  { count:100000,    name:'Cows',                   emoji:'🐄',       desc:'Sacred Cows'     },
+  { count:250000,    name:'Yellow Flower',           emoji:'🌻',       desc:'Golden Bloom'    },
+  { count:500000,    name:'Blue Flower',             emoji:'💠',       desc:'Divine Blue'     },
+  { count:1000000,   name:'Mountain',               emoji:'🏔',       desc:'Sacred Peak'     },
+  { count:2000000,   name:'Boat',                   emoji:'⛵',       desc:'Divine Vessel'   },
+  { count:5000000,   name:'Golden Flute',           emoji:'🎵',       desc:"Krishna's Flute" },
+  { count:10000000,  name:'Peacock Feather',        emoji:'🦚',       desc:'Single Feather'  },
+  { count:50000000,  name:'Double Peacock Feather', emoji:'🦚🦚',     desc:'Twin Feathers'   },
+  { count:100000000, name:'Triple Peacock Feather', emoji:'🦚🦚🦚',   desc:'Golden Feathers' },
 ];
 
 const BG_SCENES = [
-  { count: 0,      class: 'scene-0',      particles: ['#6040ff','#4020cc','#8060ff'] },
-  { count: 1000,   class: 'scene-1000',   particles: ['#7050ff','#ff6b35','#ffd700'] },
-  { count: 2000,   class: 'scene-2000',   particles: ['#8060ff','#ff8050','#ffe070'] },
-  { count: 5000,   class: 'scene-5000',   particles: ['#9070ff','#ffa060','#ffd700'] },
-  { count: 10000,  class: 'scene-10000',  particles: ['#4060ff','#00d4ff','#ffd700'] },
-  { count: 50000,  class: 'scene-50000',  particles: ['#0080ff','#00d4ff','#40c0ff'] },
-  { count: 100000, class: 'scene-100000', particles: ['#40ff80','#00ff60','#60ff40'] },
-  { count: 250000, class: 'scene-250000', particles: ['#ffc040','#ff8020','#ffff40'] },
-  { count: 500000, class: 'scene-500000', particles: ['#00ff80','#40ffc0','#00ffff'] },
+  { count:0,      gradient:'linear-gradient(180deg,#1a0a2e 0%,#0d0520 100%)' },
+  { count:1000,   gradient:'linear-gradient(180deg,#1e0d3a 0%,#110830 50%,#1a0a40 100%)' },
+  { count:2000,   gradient:'linear-gradient(180deg,#220e40 0%,#160a35 50%,#2a1050 100%)' },
+  { count:5000,   gradient:'linear-gradient(180deg,#2d0f4a 0%,#1a0a3a 50%,#350f60 100%)' },
+  { count:10000,  gradient:'linear-gradient(180deg,#1a1060 0%,#0a1540 50%,#1a0a50 100%)' },
+  { count:50000,  gradient:'linear-gradient(180deg,#0a2040 0%,#051525 50%,#0a3050 100%)' },
+  { count:100000, gradient:'linear-gradient(180deg,#102a0a 0%,#091505 50%,#103010 100%)' },
+  { count:250000, gradient:'linear-gradient(180deg,#2a1a00 0%,#1a1000 50%,#3a2000 100%)' },
+  { count:500000, gradient:'linear-gradient(180deg,#001a10 0%,#000f0a 50%,#002020 100%)' },
 ];
+
+const QUOTES = [
+  'Every name is a step closer to the Divine...',
+  'In the name lives infinite grace.',
+  'Chant with love, and love shall find you.',
+  'The tongue blessed by Naam is truly sacred.',
+  'Each repetition plants a seed in the heart.',
+  'Naam Jap is the boat across the ocean of life.',
+  'The holy name dissolves all sorrow.',
+  'Let every heartbeat be a silent prayer.',
+  'In stillness between names, the Divine speaks.',
+  'The Name of God is sweeter than all sweetness.',
+  'One name with devotion can move mountains.',
+  'With each jap, your inner light grows brighter.',
+  'Devotion is the fire; the Name is the flame.',
+  'Chanting is the simplest path to the highest.',
+  'The Name is the anchor of the wandering soul.',
+  'Every dawn is an invitation to begin anew.',
+];
+
+const GOAL_PRESETS = [
+  {value:108,   label:'108'},
+  {value:1008,  label:'1,008'},
+  {value:5000,  label:'5K'},
+  {value:10000, label:'10K'},
+  {value:0,     label:'OFF'},
+];
+
 
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
 let state = {
-  total: 0,
-  todayCount: 0,
-  lastDate: '',
-  streak: 0,
-  history: [],   // [{date, count}]
-  unlockedMilestones: [],
-  unlockedLeela: [],
+  total:0, todayCount:0, lastDate:'', streak:0,
+  history:[], unlockedMilestones:[], unlockedLeela:[],
+  theme:'sacred-night',
+  soundEnabled:false, tapSoundEnabled:true,
+  dailyGoal:108, goalCelebrated:false,
 };
 
 function loadState() {
@@ -955,58 +1290,213 @@ function checkDayReset() {
   const today = new Date().toDateString();
   if (state.lastDate !== today) {
     if (state.lastDate) {
-      // Save yesterday
-      const yesterday = state.history.find(h => h.date === state.lastDate);
-      if (!yesterday && state.todayCount > 0) {
-        state.history.unshift({ date: state.lastDate, count: state.todayCount });
+      const prev = state.history.find(h => h.date === state.lastDate);
+      if (!prev && state.todayCount > 0) {
+        state.history.unshift({ date:state.lastDate, count:state.todayCount });
         state.history = state.history.slice(0, 60);
       }
-      // Streak
       const yd = new Date(state.lastDate);
       yd.setDate(yd.getDate() + 1);
-      if (yd.toDateString() === today && state.todayCount > 0) {
-        state.streak++;
-      } else if (state.todayCount === 0) {
-        // no change
-      } else {
-        state.streak = 1;
-      }
+      if (yd.toDateString() === today && state.todayCount > 0) state.streak++;
+      else if (state.todayCount > 0) state.streak = 1;
     }
     state.todayCount = 0;
     state.lastDate = today;
+    state.goalCelebrated = false;
     saveState();
   }
 }
 
 // ═══════════════════════════════════════════
+// SOUND SYSTEM  (Web Audio API – fully lazy, off main thread)
+// ═══════════════════════════════════════════
+class SoundSystem {
+  constructor() {
+    this.ctx = null; this.master = null;
+    this.ambientNodes = []; this.ambientActive = false;
+    this.chimeTimer = null;
+  }
+  _init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.3;
+      this.master.connect(this.ctx.destination);
+    } catch(e) {}
+  }
+  _resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); }
+
+  /* Tap bell – ~0.3 s, very light */
+  playTap() {
+    if (!state.tapSoundEnabled) return;
+    this._init(); this._resume();
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(1047, t);
+    o.frequency.exponentialRampToValueAtTime(600, t + 0.25);
+    g.gain.setValueAtTime(0.22, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.connect(g); g.connect(this.master);
+    o.start(t); o.stop(t + 0.31);
+  }
+
+  /* Milestone fanfare – ascending arpeggio + shimmer */
+  playMilestone() {
+    this._init(); this._resume();
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [523,659,784,1047,1319].forEach((freq, i) => {
+      const st = t + i * 0.13;
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.38, st + 0.06);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.7);
+      o.connect(g); g.connect(this.master);
+      o.start(st); o.stop(st + 0.75);
+    });
+    [2093,2637].forEach((freq, i) => {
+      const st = t + 0.4 + i * 0.1;
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.14, st);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.9);
+      o.connect(g); g.connect(this.master);
+      o.start(st); o.stop(st + 0.95);
+    });
+  }
+
+  /* Ambient drone + pentatonic chimes */
+  startAmbient() {
+    this._init(); this._resume();
+    if (!this.ctx) return;
+    this.ambientActive = true;
+    const t = this.ctx.currentTime;
+    this.ambientNodes = [80,160,320].map((freq, i) => {
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime([0.08,0.05,0.025][i], t + 2.5);
+      o.connect(g); g.connect(this.master);
+      o.start(t);
+      return {o, g};
+    });
+    this._scheduleChime();
+  }
+  stopAmbient() {
+    this.ambientActive = false;
+    if (this.chimeTimer) clearTimeout(this.chimeTimer);
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.ambientNodes.forEach(({o, g}) => {
+      try {
+        g.gain.setValueAtTime(g.gain.value, t);
+        g.gain.linearRampToValueAtTime(0.0001, t + 2.5);
+        o.stop(t + 2.6);
+      } catch(_) {}
+    });
+    this.ambientNodes = [];
+  }
+  _scheduleChime() {
+    if (!this.ambientActive) return;
+    this.chimeTimer = setTimeout(() => {
+      if (!this.ambientActive) return;
+      this._playChime(); this._scheduleChime();
+    }, 2500 + Math.random() * 5500);
+  }
+  _playChime() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const pent = [784,880,988,1175,1319];
+    const freq = pent[Math.floor(Math.random() * pent.length)];
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.1, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
+    o.connect(g); g.connect(this.master);
+    o.start(t); o.stop(t + 2.3);
+    if (Math.random() > 0.45) {
+      const f2 = pent[Math.floor(Math.random() * pent.length)];
+      const o2 = this.ctx.createOscillator(), g2 = this.ctx.createGain();
+      o2.type = 'sine'; o2.frequency.value = f2;
+      g2.gain.setValueAtTime(0.07, t + 0.35);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 2.0);
+      o2.connect(g2); g2.connect(this.master);
+      o2.start(t + 0.35); o2.stop(t + 2.1);
+    }
+  }
+}
+const sound = new SoundSystem();
+
+
+// ═══════════════════════════════════════════
+// THEME SYSTEM
+// ═══════════════════════════════════════════
+function applyTheme(themeId, save = true) {
+  const theme = THEMES.find(t => t.id === themeId) || THEMES[0];
+  const r = document.documentElement.style;
+  Object.entries(theme.vars).forEach(([k, v]) => r.setProperty(k, v));
+
+  // SVG progress gradient
+  const s1 = document.getElementById('prog-stop-1');
+  const s2 = document.getElementById('prog-stop-2');
+  const s3 = document.getElementById('prog-stop-3');
+  if (s1) s1.style.stopColor = theme.vars['--gold'];
+  if (s2) s2.style.stopColor = theme.vars['--sacred-orange'];
+  if (s3) s3.style.stopColor = theme.vars['--gold'];
+
+  // Meta theme-color
+  const mt = document.getElementById('meta-theme');
+  if (mt) mt.content = theme.vars['--deep-purple'];
+
+  // Theme tint overlay (subtle radial glow from bottom for non-default themes)
+  const tint = document.getElementById('theme-tint');
+  if (tint) {
+    if (themeId !== 'sacred-night') {
+      tint.style.background =
+        'radial-gradient(ellipse at 50% 110%,' + theme.vars['--deep-purple'] + 'cc 0%,transparent 65%)';
+      tint.style.opacity = '1';
+    } else {
+      tint.style.opacity = '0';
+    }
+  }
+
+  // Particles
+  particleColors = theme.particles;
+
+  // Theme selector UI
+  document.querySelectorAll('.theme-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.theme === themeId));
+
+  if (save) { state.theme = themeId; saveState(); }
+}
+
+// ═══════════════════════════════════════════
 // PARTICLES
 // ═══════════════════════════════════════════
-let particleColors = BG_SCENES[0].particles;
+let particleColors = THEMES[0].particles;
 let particleInterval;
 
 function startParticles() {
   clearInterval(particleInterval);
   particleInterval = setInterval(spawnParticle, 600);
 }
-
 function spawnParticle() {
   const container = document.getElementById('particles-container');
+  if (!container) return;
   const p = document.createElement('div');
   p.className = 'particle';
   const color = particleColors[Math.floor(Math.random() * particleColors.length)];
   const size = 2 + Math.random() * 4;
-  const left = Math.random() * 100;
   const duration = 6 + Math.random() * 8;
-  p.style.cssText = `
-    width:${size}px; height:${size}px;
-    background:${color};
-    left:${left}%;
-    bottom:-10px;
-    opacity:0.6;
-    animation-duration:${duration}s;
-    animation-delay:${Math.random()*2}s;
-    box-shadow: 0 0 ${size*2}px ${color};
-  `;
+  p.style.cssText =
+    'width:' + size + 'px;height:' + size + 'px;background:' + color +
+    ';left:' + (Math.random() * 100) + '%;bottom:-10px;opacity:0.6' +
+    ';animation-duration:' + duration + 's;animation-delay:' + (Math.random()*2) + 's' +
+    ';box-shadow:0 0 ' + (size*2) + 'px ' + color + ';';
   container.appendChild(p);
   setTimeout(() => p.remove(), (duration + 2) * 1000);
 }
@@ -1015,7 +1505,7 @@ function spawnParticle() {
 // BACKGROUND SYSTEM
 // ═══════════════════════════════════════════
 let currentSceneIdx = 0;
-let bgEl = document.getElementById('bg-canvas');
+let bgEl;
 
 function updateBackground(total) {
   let newIdx = 0;
@@ -1024,34 +1514,119 @@ function updateBackground(total) {
   }
   if (newIdx !== currentSceneIdx) {
     currentSceneIdx = newIdx;
-    bgEl.className = '';
-    bgEl.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg') || '';
-    
-    const scene = BG_SCENES[newIdx];
-    // Apply gradient via inline style
     applySceneGradient(newIdx);
-    particleColors = scene.particles;
+  }
+}
+function applySceneGradient(idx) {
+  if (!bgEl) bgEl = document.getElementById('bg-canvas');
+  const scene = BG_SCENES[idx] || BG_SCENES[0];
+  bgEl.style.transition = 'background 3s ease';
+  bgEl.style.background = scene.gradient;
+}
+
+// ═══════════════════════════════════════════
+// COMBO SYSTEM  (visual only, zero count impact)
+// ═══════════════════════════════════════════
+let tapTimes = [];
+let comboHideTimer = null;
+
+function checkCombo() {
+  const now = Date.now();
+  tapTimes.push(now);
+  tapTimes = tapTimes.filter(t => now - t < 2500);
+  if (tapTimes.length >= 5) showComboDisplay(tapTimes.length);
+}
+function showComboDisplay(n) {
+  const el = document.getElementById('combo-display');
+  if (!el) return;
+  clearTimeout(comboHideTimer);
+  el.style.animation = 'none'; el.offsetHeight; // reflow
+  el.style.animation = 'combo-pop 0.25s ease';
+  let label = '⚡ COMBO ×' + n;
+  if (n >= 20) label = '🌟 DIVINE!';
+  else if (n >= 15) label = '⭐ BLAZING!';
+  else if (n >= 10) label = '🔥 ON FIRE!';
+  else if (n >= 7)  label = '💫 HOT!';
+  const gold = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#FFD700';
+  el.textContent = label;
+  el.style.color = gold;
+  el.style.textShadow = '0 0 14px ' + gold;
+  el.style.opacity = '1';
+  comboHideTimer = setTimeout(() => { el.style.opacity = '0'; }, 1800);
+}
+
+// ═══════════════════════════════════════════
+// DAILY GOAL
+// ═══════════════════════════════════════════
+function setDailyGoal(value) {
+  state.dailyGoal = value;
+  state.goalCelebrated = false;
+  saveState();
+  updateDailyGoalUI();
+  renderGoalPills();
+  if (value > 0) showToast('Daily goal set: ' + formatNum(value) + ' Jap 🎯');
+  else showToast('Daily goal turned off');
+}
+function updateDailyGoalUI() {
+  const wrap = document.getElementById('daily-goal-wrap');
+  const fill = document.getElementById('goal-bar-fill');
+  const nums = document.getElementById('goal-bar-nums');
+  if (!wrap) return;
+  if (!state.dailyGoal) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  const pct = Math.min(100, Math.round((state.todayCount / state.dailyGoal) * 100));
+  if (fill) { fill.style.width = pct + '%'; fill.classList.toggle('done', pct >= 100); }
+  if (nums) nums.textContent = formatNum(state.todayCount) + ' / ' + formatNum(state.dailyGoal);
+}
+function checkDailyGoal() {
+  if (!state.dailyGoal || state.goalCelebrated) return;
+  if (state.todayCount >= state.dailyGoal) {
+    state.goalCelebrated = true;
+    saveState();
+    showToast('🎯 Daily Goal Complete! ' + formatNum(state.dailyGoal) + ' Jap ✨');
+    sound.playMilestone();
+    if (navigator.vibrate) navigator.vibrate([80,40,80,40,160]);
   }
 }
 
-function applySceneGradient(idx) {
-  const gradients = [
-    'linear-gradient(180deg, #1a0a2e 0%, #0d0520 100%)',
-    'linear-gradient(180deg, #1e0d3a 0%, #110830 50%, #1a0a40 100%)',
-    'linear-gradient(180deg, #220e40 0%, #160a35 50%, #2a1050 100%)',
-    'linear-gradient(180deg, #2d0f4a 0%, #1a0a3a 50%, #350f60 100%)',
-    'linear-gradient(180deg, #1a1060 0%, #0a1540 50%, #1a0a50 100%)',
-    'linear-gradient(180deg, #0a2040 0%, #051525 50%, #0a3050 100%)',
-    'linear-gradient(180deg, #102a0a 0%, #091505 50%, #103010 100%)',
-    'linear-gradient(180deg, #2a1a00 0%, #1a1000 50%, #3a2000 100%)',
-    'linear-gradient(180deg, #001a10 0%, #000f0a 50%, #002020 100%)',
-  ];
-  const stars = bgEl.querySelector('.stars');
-  bgEl.style.transition = 'background 3s ease';
-  // We only transition the bgEl background; stars stay on top
-  // Instead, wrap it:
-  bgEl.style.background = gradients[idx] || gradients[0];
+// ═══════════════════════════════════════════
+// SPIRITUAL QUOTES
+// ═══════════════════════════════════════════
+let quoteIdx = Math.floor(Math.random() * QUOTES.length);
+let quoteInterval;
+
+function startQuoteRotation() {
+  const el = document.getElementById('spiritual-quote');
+  if (el) el.textContent = QUOTES[quoteIdx];
+  clearInterval(quoteInterval);
+  quoteInterval = setInterval(() => {
+    quoteIdx = (quoteIdx + 1) % QUOTES.length;
+    const el = document.getElementById('spiritual-quote');
+    if (!el) return;
+    el.style.opacity = '0';
+    setTimeout(() => { el.textContent = QUOTES[quoteIdx]; el.style.opacity = '1'; }, 600);
+  }, 45000);
 }
+
+// ═══════════════════════════════════════════
+// SOUND TOGGLES
+// ═══════════════════════════════════════════
+function toggleAmbient(enabled) {
+  state.soundEnabled = enabled;
+  saveState();
+  if (enabled) sound.startAmbient(); else sound.stopAmbient();
+}
+function toggleTapSound(enabled) {
+  state.tapSoundEnabled = enabled;
+  saveState();
+}
+function syncSoundToggles() {
+  const ac = document.getElementById('ambient-check');
+  const tc = document.getElementById('tap-check');
+  if (ac) ac.checked = !!state.soundEnabled;
+  if (tc) tc.checked = state.tapSoundEnabled !== false;
+}
+
 
 // ═══════════════════════════════════════════
 // TAP LOGIC
@@ -1061,31 +1636,38 @@ let lastTapTime = 0;
 function handleTap(e) {
   e.preventDefault();
   const now = Date.now();
-  if (now - lastTapTime < 80) return; // debounce
+  if (now - lastTapTime < 80) return;
   lastTapTime = now;
 
   state.total++;
   state.todayCount++;
 
+  // Sound (schedules Web Audio nodes — non-blocking)
+  sound.playTap();
+
+  // Haptic
+  if (navigator.vibrate) navigator.vibrate(12);
+
   // Ripple
-  const btn = document.getElementById('tap-btn');
   const ripple = document.createElement('div');
   ripple.className = 'ripple';
   document.getElementById('progress-ring-wrap').appendChild(ripple);
   setTimeout(() => ripple.remove(), 900);
 
   // +1 float
-  const counterView = document.getElementById('counter-view');
-  const plusEl = document.createElement('div');
-  plusEl.className = 'plus-one';
-  plusEl.textContent = '+1';
-  const x = 40 + Math.random() * 20;
-  const y = 30 + Math.random() * 20;
-  plusEl.style.cssText = `left:${x}%;top:${y}%;position:absolute;`;
-  counterView.appendChild(plusEl);
-  setTimeout(() => plusEl.remove(), 1000);
+  const cv = document.getElementById('counter-view');
+  const plus = document.createElement('div');
+  plus.className = 'plus-one';
+  plus.textContent = '+1';
+  plus.style.cssText = 'left:' + (38 + Math.random()*24) + '%;top:' + (28 + Math.random()*24) + '%;position:absolute;';
+  cv.appendChild(plus);
+  setTimeout(() => plus.remove(), 1000);
+
+  // Combo (O(1) after filter)
+  checkCombo();
 
   updateUI();
+  checkDailyGoal();
   checkMilestones();
   saveState();
 }
@@ -1100,66 +1682,60 @@ function checkMilestones() {
   for (const m of MILESTONES) {
     if (state.total >= m.count && !state.unlockedMilestones.includes(m.count)) {
       state.unlockedMilestones.push(m.count);
-      achievementQueue.push({ type: 'milestone', data: m });
+      achievementQueue.push({ type:'milestone', data:m });
     }
   }
   for (const l of LEELA) {
     if (state.total >= l.count && !state.unlockedLeela.includes(l.count)) {
       state.unlockedLeela.push(l.count);
-      achievementQueue.push({ type: 'leela', data: l });
+      achievementQueue.push({ type:'leela', data:l });
     }
   }
-  if (!showingAchievement && achievementQueue.length > 0) {
-    showNextAchievement();
-  }
+  if (!showingAchievement && achievementQueue.length > 0) showNextAchievement();
 }
 
 function showNextAchievement() {
   if (achievementQueue.length === 0) { showingAchievement = false; return; }
   showingAchievement = true;
   const ach = achievementQueue.shift();
-  
   const overlay = document.getElementById('achievement-overlay');
-  const badge = document.getElementById('ach-badge');
-  const title = document.getElementById('ach-title');
-  const name = document.getElementById('ach-name');
-  const count = document.getElementById('ach-count');
 
   if (ach.type === 'milestone') {
-    badge.textContent = ach.data.emoji;
-    title.textContent = '✦ Milestone Reached ✦';
-    name.textContent = ach.data.name;
-    count.textContent = formatNum(ach.data.count) + ' Jap';
+    document.getElementById('ach-badge').textContent = ach.data.emoji;
+    document.getElementById('ach-title').textContent = '✦ Milestone Reached ✦';
+    document.getElementById('ach-name').textContent  = ach.data.name;
+    document.getElementById('ach-count').textContent = formatNum(ach.data.count) + ' Jap';
   } else {
-    badge.textContent = ach.data.emoji;
-    title.textContent = '✦ Leela Unlocked ✦';
-    name.textContent = ach.data.name;
-    count.textContent = ach.data.desc;
+    document.getElementById('ach-badge').textContent = ach.data.emoji;
+    document.getElementById('ach-title').textContent = '✦ Leela Unlocked ✦';
+    document.getElementById('ach-name').textContent  = ach.data.name;
+    document.getElementById('ach-count').textContent = ach.data.desc;
   }
+
+  // Sound + haptic
+  sound.playMilestone();
+  if (navigator.vibrate) navigator.vibrate([100,60,100,60,200]);
 
   // Burst particles
   const card = overlay.querySelector('.achievement-card');
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 20; i++) {
     const p = document.createElement('div');
     p.className = 'ach-particle';
-    const angle = (i / 16) * Math.PI * 2;
-    const dist = 80 + Math.random() * 60;
+    const angle = (i / 20) * Math.PI * 2;
+    const dist  = 80 + Math.random() * 70;
     const tx = Math.cos(angle) * dist + 'px';
     const ty = Math.sin(angle) * dist + 'px';
-    const colors = ['#FFD700','#FF6B35','#FF69B4','#00D4FF','#FFF'];
-    p.style.cssText = `
-      width:8px; height:8px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      top:50%; left:50%;
-      --tx:${tx}; --ty:${ty};
-    `;
+    const cols = ['#FFD700','#FF6B35','#FF69B4','#00D4FF','#fff'];
+    p.style.cssText =
+      'width:8px;height:8px;border-radius:50%;position:absolute;pointer-events:none;' +
+      'animation:ach-burst 1.2s ease-out forwards;' +
+      'background:' + cols[Math.floor(Math.random()*cols.length)] + ';' +
+      'top:50%;left:50%;--tx:' + tx + ';--ty:' + ty + ';';
     card.appendChild(p);
     setTimeout(() => p.remove(), 1400);
   }
 
   overlay.classList.add('show');
-
-  // Auto-close after 6s
   setTimeout(() => { if (overlay.classList.contains('show')) closeAchievement(); }, 6000);
 }
 
@@ -1173,113 +1749,92 @@ function closeAchievement() {
 // ═══════════════════════════════════════════
 function formatNum(n) {
   if (n >= 10000000) return (n/10000000).toFixed(1).replace(/\.0$/,'') + 'Cr';
-  if (n >= 100000) return (n/100000).toFixed(1).replace(/\.0$/,'') + 'L';
-  if (n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K';
+  if (n >= 100000)   return (n/100000).toFixed(1).replace(/\.0$/,'')   + 'L';
+  if (n >= 1000)     return (n/1000).toFixed(1).replace(/\.0$/,'')     + 'K';
   return n.toLocaleString();
 }
-
-function formatNumFull(n) {
-  return n.toLocaleString('en-IN');
-}
+function formatNumFull(n) { return n.toLocaleString('en-IN'); }
 
 function updateUI() {
   const t = state.total;
-  
+
   // Top bar
   document.getElementById('today-count').textContent = formatNum(state.todayCount);
 
-  // Best day (all-time highest single day)
-  const allCounts = [...state.history.map(h => h.count)];
-  // include today if it's the best
-  let bestDay = { count: 0, date: '' };
-  if (state.history.length > 0 || state.todayCount > 0) {
-    const allDays = [...state.history];
-    // today candidate
-    const todayStr = new Date().toDateString();
-    const todayInHistory = allDays.find(h => h.date === todayStr);
-    if (!todayInHistory && state.todayCount > 0) {
-      allDays.push({ date: todayStr, count: state.todayCount });
-    } else if (todayInHistory) {
-      todayInHistory.count = state.todayCount;
-    }
-    bestDay = allDays.reduce((best, h) => h.count > best.count ? h : best, { count: 0, date: '' });
-  }
+  // Best day
+  const allDays = [...state.history];
+  const todayStr = new Date().toDateString();
+  const todayEntry = allDays.find(h => h.date === todayStr);
+  if (!todayEntry && state.todayCount > 0) allDays.push({ date:todayStr, count:state.todayCount });
+  else if (todayEntry) todayEntry.count = state.todayCount;
+  const bestDay = allDays.reduce((b, h) => h.count > b.count ? h : b, { count:0, date:'' });
   document.getElementById('best-day-count').textContent = formatNum(bestDay.count || 0);
   if (bestDay.date) {
     const bd = new Date(bestDay.date);
-    const isToday = bd.toDateString() === new Date().toDateString();
-    document.getElementById('best-day-date').textContent = isToday ? 'Today' :
-      bd.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    document.getElementById('best-day-date').textContent =
+      bd.toDateString() === new Date().toDateString() ? 'Today' :
+      bd.toLocaleDateString('en-IN', { day:'numeric', month:'short' });
   } else {
     document.getElementById('best-day-date').textContent = '—';
   }
 
-  // Today vs Yesterday comparison
-  const yesterdayStr = (() => { const d = new Date(); d.setDate(d.getDate()-1); return d.toDateString(); })();
-  const yesterdayEntry = state.history.find(h => h.date === yesterdayStr);
-  const yCount = yesterdayEntry ? yesterdayEntry.count : 0;
-  const tCount = state.todayCount;
+  // vs Yesterday
+  const yd = new Date(); yd.setDate(yd.getDate()-1);
+  const yCount = (state.history.find(h => h.date === yd.toDateString()) || {}).count || 0;
   const vsEl = document.getElementById('vs-yesterday-display');
-  if (yCount === 0 && tCount === 0) {
-    vsEl.innerHTML = `<span class="cmp-pct equal">—</span>`;
-  } else if (tCount === yCount) {
-    vsEl.innerHTML = `<span class="cmp-arrow equal"></span>`;
-  } else if (tCount > yCount) {
-    const pct = yCount === 0 ? 100 : Math.round(((tCount - yCount) / yCount) * 100);
-    vsEl.innerHTML = `<span class="cmp-arrow up">▲</span><span class="cmp-pct up">${pct}%</span>`;
+  if (yCount === 0 && state.todayCount === 0) {
+    vsEl.innerHTML = '<span class="cmp-pct equal">—</span>';
+  } else if (state.todayCount === yCount) {
+    vsEl.innerHTML = '<span class="cmp-arrow equal"></span>';
+  } else if (state.todayCount > yCount) {
+    const pct = yCount === 0 ? 100 : Math.round(((state.todayCount - yCount)/yCount)*100);
+    vsEl.innerHTML = '<span class="cmp-arrow up">▲</span><span class="cmp-pct up">' + pct + '%</span>';
   } else {
-    const pct = Math.round(((yCount - tCount) / yCount) * 100);
-    vsEl.innerHTML = `<span class="cmp-arrow down">▼</span><span class="cmp-pct down">${pct}%</span>`;
+    const pct = Math.round(((yCount - state.todayCount)/yCount)*100);
+    vsEl.innerHTML = '<span class="cmp-arrow down">▼</span><span class="cmp-pct down">' + pct + '%</span>';
   }
-  
+
   // Counter
   document.getElementById('total-count-big').textContent = formatNumFull(t);
-  
+
   // Progress ring
-  const circumference = 2 * Math.PI * 108;
-  let nextM = MILESTONES.find(m => t < m.count);
-  let prevM = [...MILESTONES].reverse().find(m => t >= m.count);
-  
-  let progress = 0;
-  let nextInfo = '';
+  const circ = 2 * Math.PI * 108;
+  const nextM = MILESTONES.find(m => t < m.count);
+  const prevM = [...MILESTONES].reverse().find(m => t >= m.count);
+  let progress = 0, nextInfo = '';
   if (!nextM) {
-    progress = 1;
-    nextInfo = '🌟 All Milestones Reached! Keep going...';
+    progress = 1; nextInfo = '🌟 All Milestones Reached! Keep going...';
   } else {
     const base = prevM ? prevM.count : 0;
     progress = (t - base) / (nextM.count - base);
-    const remaining = nextM.count - t;
-    nextInfo = `Next: ${formatNumFull(remaining)} to go → ${nextM.name} ${nextM.emoji}`;
+    nextInfo = 'Next: ' + formatNumFull(nextM.count - t) + ' to go → ' + nextM.name + ' ' + nextM.emoji;
   }
-  
-  const arc = document.getElementById('progress-arc');
-  arc.style.strokeDashoffset = circumference * (1 - progress);
-  
+  document.getElementById('progress-arc').style.strokeDashoffset = circ * (1 - progress);
   document.getElementById('next-milestone-info').textContent = nextInfo;
-  
-  // Milestone label
-  if (prevM) {
-    document.getElementById('milestone-label').textContent = `${prevM.emoji} ${prevM.name} Rank`;
-  } else {
-    document.getElementById('milestone-label').textContent = 'Begin your journey...';
-  }
-  
+  document.getElementById('milestone-label').textContent =
+    prevM ? prevM.emoji + ' ' + prevM.name + ' Rank' : 'Begin your journey...';
+
   // Background
   updateBackground(t);
-  
+
   // Dashboard
   document.getElementById('dash-total').textContent = formatNumFull(t);
   document.getElementById('dash-today').textContent = formatNum(state.todayCount);
-  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',month:'long',day:'numeric'});
-  const best = Math.max(...state.history.map(h => h.count), state.todayCount);
+  document.getElementById('dash-date').textContent =
+    new Date().toLocaleDateString('en-IN', { weekday:'long', month:'long', day:'numeric' });
+  const best = Math.max(...state.history.map(h => h.count), state.todayCount, 0);
   document.getElementById('dash-best').textContent = formatNum(best);
-  
-  // History streak
+
+  // Streak
   document.getElementById('hist-streak').textContent = state.streak;
+
+  // Daily goal
+  updateDailyGoalUI();
 }
 
+
 // ═══════════════════════════════════════════
-// RENDER BADGE GRID
+// RENDER FUNCTIONS
 // ═══════════════════════════════════════════
 function renderBadges() {
   const grid = document.getElementById('badge-grid');
@@ -1288,43 +1843,30 @@ function renderBadges() {
     const unlocked = state.unlockedMilestones.includes(m.count);
     const div = document.createElement('div');
     div.className = 'badge-item' + (unlocked ? ' unlocked' : '');
-    div.innerHTML = `
-      <span class="badge-emoji">${m.emoji}</span>
-      <span class="badge-name">${m.name.replace('Crown ','👑')}</span>
-      <span class="badge-req">${formatNum(m.count)}</span>
-    `;
+    div.innerHTML =
+      '<span class="badge-emoji">' + m.emoji + '</span>' +
+      '<span class="badge-name">' + m.name.replace('Crown ','👑') + '</span>' +
+      '<span class="badge-req">' + formatNum(m.count) + '</span>';
     grid.appendChild(div);
   }
 }
 
-// ═══════════════════════════════════════════
-// RENDER HISTORY
-// ═══════════════════════════════════════════
 function renderHistory() {
   const list = document.getElementById('history-list');
-  const allHistory = [];
-  
-  // Add today
-  if (state.todayCount > 0) {
-    allHistory.push({ date: new Date().toDateString(), count: state.todayCount, isToday: true });
-  }
-  allHistory.push(...state.history);
-  
-  if (allHistory.length === 0) {
-    list.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.3);font-family:'Crimson Pro',serif;font-size:14px;margin-top:20px;font-style:italic">Your journey begins today...</div>`;
+  const all = [];
+  if (state.todayCount > 0) all.push({ date:new Date().toDateString(), count:state.todayCount, isToday:true });
+  all.push(...state.history);
+  if (all.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-family:\'Crimson Pro\',serif;font-size:14px;margin-top:20px;font-style:italic">Your journey begins today...</div>';
     return;
   }
-  
-  list.innerHTML = allHistory.map(h => {
+  list.innerHTML = all.map(h => {
     const d = new Date(h.date);
     const badge = getBadgeForCount(h.count);
-    return `<div class="history-day">
-      <div>
-        <div class="history-date">${h.isToday ? '✦ Today' : d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'})}</div>
-      </div>
-      <span class="history-badge">${badge}</span>
-      <div class="history-count">${formatNum(h.count)}</div>
-    </div>`;
+    return '<div class="history-day"><div><div class="history-date">' +
+      (h.isToday ? '✦ Today' : d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'})) +
+      '</div></div><span class="history-badge">' + badge + '</span><div class="history-count">' +
+      formatNum(h.count) + '</div></div>';
   }).join('');
 }
 
@@ -1334,48 +1876,60 @@ function getBadgeForCount(c) {
   return b;
 }
 
-// ═══════════════════════════════════════════
-// RENDER LEELA GALLERY
-// ═══════════════════════════════════════════
 function renderGallery() {
   const grid = document.getElementById('gallery-grid');
   grid.innerHTML = '';
   for (const l of LEELA) {
     const unlocked = state.unlockedLeela.includes(l.count);
-    const remaining = l.count - state.total;
     const div = document.createElement('div');
     div.className = 'gallery-item' + (unlocked ? ' unlocked' : '');
-    div.id = `leela-${l.count}`;
-    div.innerHTML = `
-      ${!unlocked ? '<div class="lock-overlay">🔒</div>' : ''}
-      <span class="gallery-symbol">${l.emoji}</span>
-      <span class="gallery-name">${l.name}</span>
-      <span class="gallery-req-label">${unlocked ? '✦ Unlocked' : formatNum(l.count)}</span>
-    `;
+    div.id = 'leela-' + l.count;
+    div.innerHTML =
+      (!unlocked ? '<div class="lock-overlay">🔒</div>' : '') +
+      '<span class="gallery-symbol">' + l.emoji + '</span>' +
+      '<span class="gallery-name">' + l.name + '</span>' +
+      '<span class="gallery-req-label">' + (unlocked ? '✦ Unlocked' : formatNum(l.count)) + '</span>';
     if (!unlocked) {
-      div.addEventListener('click', () => {
-        const rem = l.count - state.total;
-        showToast(`${formatNumFull(rem)} more Jap to unlock ${l.name} ${l.emoji}`);
-      });
+      div.addEventListener('click', () =>
+        showToast(formatNumFull(l.count - state.total) + ' more Jap to unlock ' + l.name + ' ' + l.emoji));
     }
     grid.appendChild(div);
   }
 }
 
+function renderThemeSelector() {
+  const row = document.getElementById('theme-row');
+  if (!row) return;
+  row.innerHTML = THEMES.map(th =>
+    '<button class="theme-btn' + (state.theme === th.id ? ' active' : '') + '" ' +
+    'data-theme="' + th.id + '" onclick="applyTheme(\'' + th.id + '\')">' +
+    '<span class="theme-emoji">' + th.emoji + '</span>' +
+    '<span class="theme-name">' + th.name + '</span></button>'
+  ).join('');
+}
+
+function renderGoalPills() {
+  const c = document.getElementById('goal-pills');
+  if (!c) return;
+  c.innerHTML = GOAL_PRESETS.map(g =>
+    '<button class="goal-pill' + (state.dailyGoal === g.value ? ' active' : '') + '" ' +
+    'onclick="setDailyGoal(' + g.value + ')">' + g.label + '</button>'
+  ).join('');
+}
+
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const views = ['counter', 'dashboard', 'history', 'gallery'];
+const views = ['counter','dashboard','history','gallery'];
 
 function switchView(view, navId) {
   views.forEach(v => {
     document.getElementById(v + '-view').classList.toggle('active', v === view);
     document.getElementById(v + '-nav').classList.toggle('active', v + '-nav' === navId);
   });
-
   if (view === 'dashboard') { renderBadges(); updateUI(); }
-  if (view === 'history') renderHistory();
-  if (view === 'gallery') renderGallery();
+  if (view === 'history')   { renderHistory(); }
+  if (view === 'gallery')   { renderGallery(); renderThemeSelector(); renderGoalPills(); syncSoundToggles(); }
 }
 
 // ═══════════════════════════════════════════
@@ -1384,8 +1938,7 @@ function switchView(view, navId) {
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
@@ -1395,12 +1948,10 @@ function showToast(msg) {
 // ═══════════════════════════════════════════
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   const bar = document.getElementById('install-bar');
   if (bar) bar.style.display = 'flex';
 });
-
 function installApp() {
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -1416,38 +1967,51 @@ function installApp() {
 // INIT
 // ═══════════════════════════════════════════
 loadState();
-updateUI();
+bgEl = document.getElementById('bg-canvas');
+applyTheme(state.theme || 'sacred-night', false);
 applySceneGradient(currentSceneIdx);
+updateBackground(state.total);
+updateUI();
 startParticles();
+startQuoteRotation();
+
+// Re-start ambient on first user gesture if it was enabled last session
+if (state.soundEnabled) {
+  const restoreAmbient = () => {
+    if (state.soundEnabled) sound.startAmbient();
+    document.removeEventListener('click',     restoreAmbient);
+    document.removeEventListener('touchstart', restoreAmbient);
+  };
+  document.addEventListener('click',     restoreAmbient, { once:true });
+  document.addEventListener('touchstart', restoreAmbient, { once:true });
+}
 
 // Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-// Prevent zoom on double tap
+// Prevent double-tap zoom
 let lastTouch = 0;
 document.addEventListener('touchend', e => {
   const now = Date.now();
-  if (now - lastTouch <= 300) { e.preventDefault(); }
+  if (now - lastTouch <= 300) e.preventDefault();
   lastTouch = now;
 }, { passive: false });
 
-// Keep screen on if supported
+// Wake lock
 async function requestWakeLock() {
   if ('wakeLock' in navigator) {
-    try { await navigator.wakeLock.request('screen'); } catch(e) {}
+    try { await navigator.wakeLock.request('screen'); } catch(_) {}
   }
 }
 requestWakeLock();
 
-// Keyboard shortcut (spacebar for desktop)
+// Keyboard (desktop)
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space' || e.code === 'Enter') {
-    e.preventDefault();
-    handleTap(e);
-  }
+  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); handleTap(e); }
 });
+
 </script>
 </body>
 </html>

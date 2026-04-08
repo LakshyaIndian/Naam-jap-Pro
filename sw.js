@@ -1,5 +1,5 @@
-// Naam Jap Counter - Service Worker v1.0
-const CACHE_NAME = 'naamjap-v1';
+// Naam Jap Counter - Service Worker v4.0
+const CACHE_NAME = 'naamjap-v4';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
